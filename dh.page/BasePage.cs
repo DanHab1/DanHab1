@@ -12,8 +12,9 @@ namespace dh.page
 {
     public class BasePage
     {
-        WebDriverAdapter driver;
-        public BasePage(WebDriverAdapter driver)
+        WebDriverWrapper driver;
+        IWebElement element;
+        public BasePage(WebDriverWrapper driver)
         {
             this.driver = driver;
             //WaitLoading();
@@ -45,5 +46,10 @@ namespace dh.page
             }
             catch { }
         }
+
+        protected IWebElement GetInput(string placeholderName) =>
+            driver.FindElements("//input").Where(x => x.GetAttribute("placeholder") == placeholderName).First();
+
+        protected IWebElement GetButton(string buttonName) => driver.FindElements("//button").Where(x => x.GetAttribute("innerText") == buttonName).First();
     }
 }

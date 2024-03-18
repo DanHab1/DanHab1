@@ -13,7 +13,7 @@ using dh.core.Helper.WebHelper.Js;
 
 namespace dh.core.UI.Adapter
 {
-    public class WebDriverAdapter // : IWebDriver
+    public class WebDriverWrapper // : IWebDriver
     {
         public WebDriver webDriver;
         private readonly IConfig webConfig = IConfig.getConfig();
@@ -42,13 +42,13 @@ namespace dh.core.UI.Adapter
             else webDriver.Quit();
         }
 
-        public WebDriverAdapter ManageDriver()
+        public WebDriverWrapper ManageDriver()
         {
             webDriver.Manage().Window.Maximize();
             return this;
         }
 
-        public WebDriverAdapter NavigateToDriver(string url)
+        public WebDriverWrapper NavigateToDriver(string url)
         {
             webDriver.Navigate().GoToUrl(url);
             return this;
@@ -76,7 +76,7 @@ namespace dh.core.UI.Adapter
             {
                 var element = webDriver.FindElements(By.XPath(XPathLocator)).ToList();
                 //JSWebHelper.ExecuteJsScript(webDriver, element[0], "arguments[0].style.backgroundColor = 'yellow'");
-                JSWebHelper.ChangeColorElement(webDriver, element.FirstOrDefault(), "yellow");
+                JSWebHelper.ChangeColorElement(webDriver, element.First(), "yellow");
                 return element;
             }
             catch (NoSuchElementException)
@@ -86,7 +86,7 @@ namespace dh.core.UI.Adapter
 
         }
 
-        public WebDriverAdapter Wait(int time)
+        public WebDriverWrapper Wait(int time)
         {
             webDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(time);
             return this;
@@ -97,5 +97,14 @@ namespace dh.core.UI.Adapter
             WebDriverWait wait = new WebDriverWait(webDriver, TimeSpan.FromSeconds(time));
             var myDynamicElement = wait.Until(d => webDriver.FindElement(By.XPath(xpathElement)).Displayed);
         }
+
+        public string GetCurrentUrl() => webDriver.Url;
+
+        public WebDriverWrapper GoToTab(int indexTab)
+        {
+            webDriver.SwitchTo().Window(webDriver.WindowHandles[indexTab]);
+            return this;
+        }
+        
     }
 }

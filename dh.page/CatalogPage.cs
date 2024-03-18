@@ -11,26 +11,27 @@ namespace dh.page
 {
     public class CatalogPage : BasePage
     {
-        WebDriverAdapter driver;
-        public CatalogPage(WebDriverAdapter driver) : base(driver)
+        WebDriverWrapper driver;
+
+        public CatalogPage(WebDriverWrapper driver) : base(driver)
         {
             this.driver = driver;
         }
+
         private string _pathInputFilter = "//div[contains(@class,'search-form__input')]";
         private string _pathSearchButton = "//button[text()='Искать']";
         //private string _pathInputFilter = "//input[@class='search-form__input ']";
+
         public CatalogPage SendTextOnFilterOfNameCourse(string nameCourse)
         {
-            var inputFilter = driver.FindElement(_pathInputFilter + "//input");
-            inputFilter.Click();
-            inputFilter.Clear();
-            inputFilter.SendKeys(nameCourse);
+            var complite = new Complite(driver, "Название курса, автор или предмет");
+            complite.SendTextToComplite(nameCourse);
             return this;
         }
 
         public SearchCatalogPage GoToItemComplite(int indexItem)
         {
-            var complite = new Complite(driver.FindElement(_pathInputFilter));
+            var complite = new Complite(driver, "Название курса, автор или предмет");
             complite.GetItemComplite().ElementAt(indexItem).Value.Click();
             return new SearchCatalogPage(driver);
         }
@@ -38,7 +39,7 @@ namespace dh.page
         public List<string> GetTextItemComplite()
         {
             List<string> listItemText = new List<string>(); 
-            var complite = new Complite(driver.FindElement(_pathInputFilter));
+            var complite = new Complite(driver, "Название курса, автор или предмет");
             var items = complite.GetItemComplite();
 
             foreach (var i in items.Keys)

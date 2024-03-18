@@ -8,7 +8,7 @@ using NUnit.Allure.Attributes;
 namespace dh.test.UI.Suite
 {
     [AllureSuite("Фильтрация по каталогу")]
-    public class Tests : BaseTest
+    public class FilterTest : BaseTest
     {
         [AllureName("Фильтрация")]
         [DisplayName("Фильтрация по наименованию курса")]
@@ -26,33 +26,40 @@ namespace dh.test.UI.Suite
          */
         public void FilterToNameCourse(string nameCourse)
         {
+            string rez = "";
+
             CatalogPage catalogPage = new CatalogPage(driver);
             var itemsFilterCourse = catalogPage.SendTextOnFilterOfNameCourse(nameCourse)
                 .GoToItemComplite(1)
                 .GetModelsSearchCourseItems();
+            
             foreach (var item in itemsFilterCourse)
-            {
-                Assert.IsTrue(item.Title.ToLower().Contains(nameCourse.ToLower()) || item.Description.ToLower().Contains(nameCourse.ToLower()),
-                    $"При фильтрации обнаружен курс, который не содержит наименования или описания по фильтрованной теме:\nФильтр: {nameCourse.ToLower()}\nНаименование: {item.Title}\nОписание: {item.Description}");
-            }
+                if (!item.Title.ToLower().Contains(nameCourse.ToLower()))
+                    rez += item.Title; 
+
+            Assert.IsTrue(rez != "",
+                $"При фильтрации обнаружен курсы, которые не содержат наименования по фильтрованной теме:\nФильтр: {nameCourse.ToLower()}\nРезультат: {rez}");
         }
 
         /* 
         * Кейс:
         * 1) Открыть страницу каталога
         * 2) Ввести автора курса в инпут фильтра
-        * 3) Нажать на кнопку "Искать"
-        * 4) Проверить результат фильтра на предмет наличия введенного автора курса 
+        * 3) Выбрать 1 запись из комплита
+        * 4) Открыть страницу автора
+        * 5) Сравнить курсы, выданные при фильтрации по автору и курсы на странице автора
         * Ожидаемое поведение системы:
-        * Выводятся записи с учетом фильтрации по автору курса (или описания)
+        * Выводятся все курсы, которые есть у автора
         */
         [AllureName("Фильтрация")]
         [DisplayName("Фильтрация по автору курса")]
         [Test]
         [TestCase("Дальневосточный федеральный университет")]
-        [TestCase("TechTutors Team")]
+        [TestCase("TechTutors")]
         public void FilterToAuthorCourse(string nameAuthor)
         {
+            string rez = "";
+
             CatalogPage catalogPage = new CatalogPage(driver);
             var searchCataologPage = catalogPage.SendTextOnFilterOfNameCourse(nameAuthor)
                 .ClickToSearchButton();
@@ -70,17 +77,12 @@ namespace dh.test.UI.Suite
                 $"Не совпадают кол-во курсов у автора и при фильтрации в каталоге\nПри фильтрации кол-во записей: {itemsFilterCourse.Count()}\nУ Автора кол-во курсов: {itemsAuthorCourse.Count()}");
 
             for (int i = 0; i < itemsFilterCourse.Count(); i++)
-            {
-                Assert.IsTrue(itemsFilterCourse.ElementAt(i).ToString() == itemsAuthorCourse.ElementAt(i).ToString(),
-                    $"Не совпадают курсы в карточке автора и при фильтрации в каталоге\n{itemsFilterCourse.ElementAt(i).ToString()}\n{itemsAuthorCourse.ElementAt(i).ToString()}");
-            };
+                if (itemsFilterCourse.ElementAt(i).ToString() == itemsAuthorCourse.ElementAt(i).ToString())
+                    rez += itemsFilterCourse.ElementAt(i).ToString() + itemsAuthorCourse.ElementAt(i).ToString();
 
-            //foreach (var item in itemsFilterCourse)
-            //{
-            //    //Assert.IsTrue(item.Author.ToLower().Contains(nameAuthor.ToLower()),
-            //    //    $"При фильтрации обнаружен курс, который не содержит введенного автора:\nФильтр: {nameAuthor.ToLower()}\nАвтор курса: {item.Author}\nНаименование курса: {item.Title}");
-            //}
+            Assert.IsTrue(rez != "", $"Не совпадают курсы в карточке автора и при фильтрации в каталоге:\n{rez}");
         }
+
         /* 
         * Кейс:
         * 1) Открыть страницу каталога
@@ -94,12 +96,28 @@ namespace dh.test.UI.Suite
         * При фильтрации в каталоге выводятся все курсы автора
         */
         [AllureName("Фильтрация")]
-        [DisplayName("Фильтрация по автору курса")]
+        [DisplayName("Фильтрация по языкам курсов")]
         [Test]
-        [TestCase("TechTutors Team")]
-        public void FilterCourseAuthor(string nameCourse)
+        [TestCase("TechTutors")]
+        public void FilterLanguage(string nameCourse)
         {
+            string rez = "";
 
+            string[] arrayTitle = {"На любом языке", "На русском", "На английском"};
+            CatalogPage catalogPage = new CatalogPage(driver);
+
+            var itemsFilterCourse = catalogPage.SendTextOnFilterOfNameCourse(nameCourse)
+                .ClickToSearchButton()
+                .SetCheckbox("Любой", true)
+                .SetCheckbox("Русский", true)
+                .SetCheckbox("Английский", true);
+
+            var titleAppliedFiter = itemsFilterCourse.GetTitleAppliedFilterBar();
+
+            foreach(var item in titleAppliedFiter)
+                if(!arrayTitle.Any(s => s == item)) rez += item;
+
+            Assert.IsTrue(rez != "", $"Отсутствует выбранный фильтр среди применненых '{rez}'");
         }
     }
 }

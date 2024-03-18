@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace dh.core.UI.Adapter
 {
-    public class WebElementAdapter
+    public class WebElementWrapper
     {
-        public WebElementAdapter()
+        public WebElementWrapper()
         {
             
         }

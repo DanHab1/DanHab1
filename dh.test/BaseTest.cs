@@ -17,7 +17,7 @@ namespace dh.test
     public class BaseTest
     {
         protected readonly IConfig webConfig = IConfig.getConfig();
-        protected WebDriverAdapter driver;
+        protected WebDriverWrapper driver;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -30,7 +30,7 @@ namespace dh.test
         [SetUp]
         public void SetUp()
         {
-            driver = new WebDriverAdapter();
+            driver = new WebDriverWrapper();
             driver.CreateDriver();
             driver.Wait(30);
             driver.NavigateToDriver(webConfig.GetWebUrl());

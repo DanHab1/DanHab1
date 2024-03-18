@@ -9,13 +9,12 @@ namespace dh.page.Component
 {
     public abstract class BaseComponent<T> where T : class
     {
-        protected IWebElement element;
+        //protected IWebElement element;
 
-        public BaseComponent(IWebElement element)
+        public BaseComponent()
         {
-            this.element = element;
         }
 
-        public IWebElement GetElement() => element;
+        //public IWebElement GetElement() => element;
     }
 }

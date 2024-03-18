@@ -10,8 +10,8 @@ namespace dh.page
 {
     public class LearnPage : BasePage
     {
-        WebDriverAdapter driver;
-        public LearnPage(WebDriverAdapter driver) : base(driver)
+        WebDriverWrapper driver;
+        public LearnPage(WebDriverWrapper driver) : base(driver)
         {
             this.driver = driver;
         }

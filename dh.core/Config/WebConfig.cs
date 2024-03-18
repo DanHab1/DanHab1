@@ -13,14 +13,8 @@ namespace dh.core.Config
 
         //Добавить опции для браузера
 
-        public string GetWebUrl()
-        {
-            return "https://stepik.org/";
-        }
+        public string GetWebUrl() => "https://stepik.org/";
 
-        public string GetBrowserName()
-        {
-            return "chrome";
-        }
+        public string GetBrowserName() => "chrome";
     }
 }

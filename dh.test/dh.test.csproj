@@ -23,4 +23,8 @@
     <ProjectReference Include="..\dh.page\dh.page.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="API\" />
+  </ItemGroup>
+
 </Project>

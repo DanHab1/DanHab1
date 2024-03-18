@@ -11,28 +11,42 @@ namespace dh.page.Component
     public class Header : BaseComponent<Header>
     {
         IWebElement element;
-        WebDriverAdapter driver;
+        WebDriverWrapper driver;
 
-        private string _catalogButton = "ember156";
-        private string _learnButton = "ember145";
+        //private string _catalogButton = "ember156";
+        //private string _learnButton = "ember145";
+        //private string _searchCourseComplite = "ember3501";
+        private string _header = "//nav[@id='main-navbar']";
         private string _searchInput = "//header//child::input[contains(@class,'navbar__search-input')]";
-        private string _searchCourseComplite = "ember3501";
 
-        public Header(IWebElement element) : base(element)
+
+        public Header(WebDriverWrapper driver) : base()
         {
-            this.element = element;
-        }
-        public CatalogPage OpenCatalog()
-        {
-            driver.webDriver.FindElement(By.Id(_catalogButton)).Click();
-            return new CatalogPage(driver);
+            this.driver = driver;
+            element = GetHeader();
         }
 
-        public LearnPage OpenLearn()
+        private IWebElement GetHeader() => driver.webDriver.FindElement(By.XPath(_header));
+
+        public Header GetTab(string nameTitle)
         {
-            driver.webDriver.FindElement(By.Id(_learnButton)).Click();
-            return new LearnPage(driver);
+            element = element.FindElements(By.XPath(".//a")).Where(x => x.GetDomProperty("innerText") == nameTitle).First();
+            return this;
         }
+
+        public void OpenTab() => element.Click();
+
+
+        //public LearnPage OpenLearn()
+        //{
+        //    driver.webDriver.FindElement(By.Id(_learnButton)).Click();
+        //    return new LearnPage(driver);
+        //}
+        //public LearnPage OpenTeaching()
+        //{
+        //    driver.webDriver.FindElement(By.Id(_learnButton)).Click();
+        //    return new LearnPage(driver);
+        //}
 
         public SearchCatalogPage SearchInputSendText(string text)
         {
@@ -41,7 +55,7 @@ namespace dh.page.Component
             inputSearch.Clear();
             inputSearch.SendKeys(text);
 
-            var searchComplite = new Complite(driver.FindElement(_searchCourseComplite));
+            var searchComplite = new Complite(driver, "Поиск...");
             searchComplite.GetItemComplite().ElementAt(1).Value.Click();
             return new SearchCatalogPage(driver);
         }

@@ -1,6 +1,8 @@
 ﻿using dh.core.Helper.WebHelper.Js;
 using dh.core.UI.Adapter;
+using dh.page.Component;
 using dh.page.Model;
+using dh.page.Model.Dto;
 using OpenQA.Selenium;
 using OpenQA.Selenium.DevTools.V119.Audits;
 using System;
@@ -14,39 +16,47 @@ namespace dh.page
 {
     public class SearchCatalogPage : BasePage
     {
-        WebDriverAdapter driver;
-        public SearchCatalogPage(WebDriverAdapter driver) : base(driver)
+        WebDriverWrapper driver;
+        public SearchCatalogPage(WebDriverWrapper driver) : base(driver)
         {
             this.driver = driver;
         }
 
-        List<SearchCardCourseModel> courseModels = new List<SearchCardCourseModel>();
+        List<CardAuthorAndCardCatalogDto> courseModels = new List<CardAuthorAndCardCatalogDto>();
 
         private string _pathCourseCardsItems = "//div[contains(@class,'catalog-block')]//ul";
         private string _pathAuthorLink = "//a[@class='course-card__author']";
+        private string _pathFilterBar = "//div[@class='applied-filters catalog__applied-filters-bar']";
 
-        public List<SearchCardCourseModel> GetModelsSearchCourseItems()
+        public List<CardAuthorAndCardCatalogDto> GetModelsSearchCourseItems()
         {
-            for(int i = 0; i < 3; i++)
+            for(int i = 0; i < 3; i++) //Временное решение загрузки страницы со скроллом
             {
                 JSWebHelper.ScrollWindow(driver.webDriver, 0, 1000);
-                Thread.Sleep(1500);
+                Thread.Sleep(1500); 
             }
             
             var items = driver.FindElement(_pathCourseCardsItems).FindElements(By.XPath(".//li"));
             foreach(var item in items)
             {
                 var card = item.GetAttribute("innerText").Split("\r\n");
-                SearchCardCourseModel cardModel = new SearchCardCourseModel()
+                CardAuthorAndCardCatalogDto cardDto = new CardAuthorAndCardCatalogDto()
                 {
                     Title = card[0] ?? throw new Exception("Не удалось получить заголовок карточки курса"),
                     Author = card[1],
-                    //Description = card[2],
                     Price = card[card.Length - 1],
-                    //IsWithSertificate = card[card.Length - 3] == "сертификат" ? true : false,
                     ElementModel = item
                 };
-                courseModels.Add(cardModel);
+                //SearchCardCourseModel cardModel = new SearchCardCourseModel()
+                //{
+                //    Title = card[0] ?? throw new Exception("Не удалось получить заголовок карточки курса"),
+                //    Author = card[1],
+                //    //Description = card[2],
+                //    Price = card[card.Length - 1],
+                //    //IsWithSertificate = card[card.Length - 3] == "сертификат" ? true : false,
+                //    ElementModel = item
+                //};
+                courseModels.Add(cardDto);
             }
             return courseModels;
         }
@@ -58,9 +68,16 @@ namespace dh.page
             return new AuthorInfoPage(driver);
         }
 
-        
+        public SearchCatalogPage SetCheckbox(string nameCheckbox, bool value)
+        {
+            var checkbox = new Checkbox(driver, nameCheckbox);
+            checkbox
+                .SetCheckbox(value);
+            return this;
+        }
 
-
-
+        public IEnumerable<string> GetTitleAppliedFilterBar() =>
+            driver.FindElement(_pathFilterBar).FindElements(By.XPath("//*[@class='applied-filters-badge__title']"))
+                .Select(x => x.GetAttribute("innerText"));
     }
 }
