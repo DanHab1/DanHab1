@@ -43,7 +43,5 @@ namespace dh.page.Component
         {
             if (_checkbox.GetValueCheckbox() != value) element.Click();
         }
-
-
     }
 }

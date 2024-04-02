@@ -7,7 +7,7 @@ using NUnit.Allure.Attributes;
 
 namespace dh.test.UI.Suite
 {
-    [AllureSuite("Фильтрация по каталогу")]
+    [AllureSuite("UI")]
     public class FilterTest : BaseTest
     {
         [AllureName("Фильтрация")]
@@ -29,7 +29,8 @@ namespace dh.test.UI.Suite
             string rez = "";
 
             CatalogPage catalogPage = new CatalogPage(driver);
-            var itemsFilterCourse = catalogPage.SendTextOnFilterOfNameCourse(nameCourse)
+            var itemsFilterCourse = catalogPage
+                .SendTextOnFilterOfNameCourse(nameCourse)
                 .GoToItemComplite(1)
                 .GetModelsSearchCourseItems();
             
@@ -102,8 +103,8 @@ namespace dh.test.UI.Suite
         public void FilterLanguage(string nameCourse)
         {
             string rez = "";
-
             string[] arrayTitle = {"На любом языке", "На русском", "На английском"};
+
             CatalogPage catalogPage = new CatalogPage(driver);
 
             var itemsFilterCourse = catalogPage.SendTextOnFilterOfNameCourse(nameCourse)

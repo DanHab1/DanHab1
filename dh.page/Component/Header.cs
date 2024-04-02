@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace dh.page.Component
 {
@@ -58,6 +59,15 @@ namespace dh.page.Component
             var searchComplite = new Complite(driver, "Поиск...");
             searchComplite.GetItemComplite().ElementAt(1).Value.Click();
             return new SearchCatalogPage(driver);
+        }
+
+        public List<string> GetTitleOfTabs()
+        {
+            List<string> names = new List<string>();
+            var tabs = element.FindElements(By.XPath(".//a"));
+            foreach( var tab in tabs )
+                names.Add(tab.GetAttribute("innerText"));
+            return names;
         }
 
     }

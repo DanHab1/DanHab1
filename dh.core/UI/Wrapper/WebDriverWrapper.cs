@@ -32,7 +32,6 @@ namespace dh.core.UI.Adapter
                 //webDriver = new EdgeDriver();
                 return webDriver;
             }
-
             else return webDriver;
         }
 

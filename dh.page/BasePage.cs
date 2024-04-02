@@ -23,12 +23,6 @@ namespace dh.page
         private string _pathLoading = "//*[contains(@data-loading,'lazy-pending')]";
         protected void WaitLoading()
         {
-            //try
-            //{
-            //    var wait = new WebDriverWait(driver.webDriver, TimeSpan.FromSeconds(10));
-            //    wait.Until(driver => driver.FindElements(By.XPath(_pathLoading)).Count == 0);
-            //}
-            //catch (WebDriverTimeoutException ex) { }
             try
             {
                 for (int i = 0; i < 10; i++)
@@ -50,6 +44,7 @@ namespace dh.page
         protected IWebElement GetInput(string placeholderName) =>
             driver.FindElements("//input").Where(x => x.GetAttribute("placeholder") == placeholderName).First();
 
-        protected IWebElement GetButton(string buttonName) => driver.FindElements("//button").Where(x => x.GetAttribute("innerText") == buttonName).First();
+        protected IWebElement GetButton(string buttonName) => 
+            driver.FindElements("//button").Where(x => x.GetAttribute("innerText") == buttonName).First();
     }
 }
